@@ -10,6 +10,9 @@ from yellowbrick.classifier import ConfusionMatrix
 from sklearn.model_selection import train_test_split
 from yellowbrick.classifier import ClassificationReport
 from sklearn.metrics import confusion_matrix
+import warnings
+
+warnings.filterwarnings("ignore")
 
 
 def main():
@@ -28,7 +31,7 @@ def run_model(prediction_duration, stock):
     training_data['close'] = stock[['Adj Close']]
     sm = training_data.ta.sma(append=True)
     rs = training_data.ta.rsi(append=True)
-    df = create_output_firld(prediction_duration, training_data)
+    df = create_output_field(prediction_duration, training_data)
 
     X = df.iloc[:, 2:4]
     y = df.iloc[:, -1]
@@ -43,13 +46,15 @@ def run_model(prediction_duration, stock):
     y_pred = classifier.predict(X_test)
     print(confusion_matrix(y_test, y_pred))
     model = classifier
+    print("check result for model ")
     result = model_position_performance(df, model)
+    print("check result for dummy  model ")
     dummy_model = DummyClassifier(strategy="most_frequent")
     dummy_model.fit(X_train, y_train)
     result = model_position_performance(df, dummy_model)
 
 
-def create_output_firld(prediction_duration, training_data):
+def create_output_field(prediction_duration, training_data):
     df = training_data
     df["Ret"] = df["close"].pct_change()
     df.reset_index(inplace=True)
@@ -83,11 +88,11 @@ def model_position_performance(df, model):
     print("Buy and Hold Return =", Buy_Return * 100, "%")
     df = df.dropna()
     ret = df.CumRet_L
-    ret.mean() / ret.std()
+    print(f"sharpe for CumRet_L  {ret.mean() / ret.std()}")
     ret = df.bhRet
-    ret.mean() / ret.std()
+    print(f"sharpe for bhRet  {ret.mean() / ret.std()}")
     ret = df.CumRet
-    ret.mean() / ret.std()
+    print(f"sharpe for CumRet  {ret.mean() / ret.std()}")
     return df
 
 
