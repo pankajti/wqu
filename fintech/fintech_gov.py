@@ -14,6 +14,8 @@ def main():
     records = []
     #companies = ['fego']
     driver = webdriver.Firefox()
+    page_url = r'https://www.ynos.in/products/startups/index.html#!/dashboard?query={}'.format(company)
+
 
     for company in set(companies):
         print(f"started for {company}")
