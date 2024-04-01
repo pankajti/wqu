@@ -15,6 +15,7 @@ def breakout_signal(candle_data, thresold ):
 
 
 def main():
+    ## Need to extract the zip file before running
     minute_data_path = r'../data/minute_data.csv'
     ticker = 'RELIANCE.NS'
     all_transactions = []
