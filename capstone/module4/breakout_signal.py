@@ -15,7 +15,7 @@ def breakout_signal(candle_data, thresold ):
 
 
 def main():
-    minute_data_path = r'minute_data.csv'
+    minute_data_path = r'../data/minute_data.csv'
     ticker = 'RELIANCE.NS'
     all_transactions = []
     date = '2024-03-28'
