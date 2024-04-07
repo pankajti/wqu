@@ -58,7 +58,7 @@ def get_signals(market_data):
 
     return pd.concat(all_transactions)
 
-def get_positions(signals , candle_data):
+def create_positions(signals, candle_data):
     logger.info("started loading universe ")
     positions = signals[['ticker', 'transactio_type', 'Close_0']].reset_index()
     positions.columns =['trade_time','ticker', 'side', 'price']
@@ -164,7 +164,7 @@ def intraday_trading_job(current_time):
 
     signals = get_signals(candle_data)
     print(f"total signals {signals}")
-    positions = get_positions(signals,candle_data)
+    positions = create_positions(signals, candle_data)
     actual_inventory = get_current_inventory(trade_date)
     model_inventory = calculate_model_inventory(actual_inventory,positions)
     trade_list = calculate_trades(model_inventory, candle_data)
