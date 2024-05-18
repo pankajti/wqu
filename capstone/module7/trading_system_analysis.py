@@ -27,6 +27,7 @@ def main():
     dbEngine = sqlalchemy.create_engine(f'sqlite:///{db_data_path}')
     versions = pd.read_sql("select * from version_info vi where version_no  >= 1715023716 ", dbEngine)
     versions=versions.set_index('version_no')
+    over_all_performance_list= []
     for version, run_info in versions.iterrows():
         run_info_dict  = json.loads(run_info[0].replace("'", '"'))
 
@@ -50,11 +51,26 @@ def main():
         daily_perfoemance['per_ret_bc'] = 100 * ((daily_perfoemance.sell - daily_perfoemance.buy) / daily_perfoemance.buy)
         daily_perfoemance['per_ret_ac'] = 100 * ((daily_perfoemance.sell - daily_perfoemance.buy - daily_perfoemance.tc) / daily_perfoemance.buy)
         daily_perfoemance['hit_ratio'] = trades_data.groupby('tdate').ret_perc_ac.apply(lambda col: sum(col>0)/len(col))
-        cum_ret_bc = (1 + daily_perfoemance.per_ret_ac / 100).cumprod()
-        cum_ret_bc = (1 + daily_perfoemance.per_ret_bc).cumprod()
-        sharpe_ratio = daily_perfoemance.per_ret_ac.mean() / daily_perfoemance.per_ret_ac.std()
-        h_ratio =  sum(trades_data.per_ret_ac>0)/len(trades_data.per_ret_ac)
-        print(f" Sharpe ratio::  {sharpe_ratio}")
+
+        over_all_performance = {}
+
+        cum_ret_bc = (1 + daily_perfoemance.per_ret_bc).cumprod()[-1]
+        cum_ret_ac = (1 + daily_perfoemance.per_ret_ac).cumprod()[-1]
+        sharpe_ratio_ac = daily_perfoemance.per_ret_ac.mean() / daily_perfoemance.per_ret_ac.std()
+        sharpe_ratio_bc = daily_perfoemance.per_ret_bc.mean() / daily_perfoemance.per_ret_bc.std()
+        over_all_performance['cum_ret_bc']=cum_ret_bc
+        over_all_performance['cum_ret_ac']=cum_ret_ac
+        over_all_performance['sharpe_ratio_ac']=sharpe_ratio_ac
+        over_all_performance['sharpe_ratio_bc']=sharpe_ratio_bc
+        h_ratio =  sum(trades_data.ret_perc_ac>0)/len(trades_data.ret_perc_ac)
+
+        over_all_performance['hit_ratio']=h_ratio
+        over_all_performance.update(run_info_dict)
+        over_all_performance_list.append(over_all_performance)
+        print(version)
+    pd.DataFrame(over_all_performance_list).to_csv('over_all_performance.csv')
+
+
 
 if __name__ == '__main__':
     main()
