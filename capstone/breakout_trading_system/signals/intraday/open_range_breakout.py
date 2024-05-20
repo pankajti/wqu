@@ -8,7 +8,6 @@ import pytz
 import time
 import sqlite3
 import sqlalchemy
-from capstone.breakout_trading_system.signals.intraday.price_breakout import get_signals
 
 version = int(time.time())
 logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s', level=logging.INFO)
@@ -22,12 +21,12 @@ con = sqlite3.connect(db_data_path)
 dbEngine = sqlalchemy.create_engine(f'sqlite:///{db_data_path}')
 
 class OrbSignal():
-    def __init__(self, market_data):
+    def __init__(self, market_data, open_interval = 35):
         self.market_data_close = market_data.pivot_table(index='timestamp', columns='ticker', values='Close').fillna(
             method='ffill')
-        self.min_df = self.market_data_close[:35].min().dropna()
+        self.min_df = self.market_data_close[:open_interval].min().dropna()
         self.min_df.name='min_val'
-        self.max_df = self.market_data_close[:35].max().dropna()
+        self.max_df = self.market_data_close[:open_interval].max().dropna()
         self.max_df.name='max_val'
 
 
