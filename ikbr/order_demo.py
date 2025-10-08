@@ -18,10 +18,10 @@ class OrderDemo(EClient, EWrapper):
         self.nextorderId = orderId
         print('The next valid order id is: ', self.nextorderId)
 
-    def position(self, account, contract, pos, avgCost):
+    def position(self, account, contract, pos, avgCost, ):
         print("getting positions")
         index = str(account) + str(contract.symbol)
-        self.all_positions.append( account, contract.symbol, pos, avgCost, contract.secType)
+        self.all_positions.append( (account, contract.symbol, pos, avgCost, contract.secType))
 
 
 def FX_contract(symbol):
@@ -51,22 +51,26 @@ def main():
     print("Waiting for IB's API response for accounts positions requests...\n")
     time.sleep(3)
     current_positions = app.all_positions
+    print("showing all the positions ")
 
     print(current_positions)
 
     # Create order object
     order = Order()
-    order.action = 'BUY'
+    order.action = 'SELL'
     order.totalQuantity = 1000
     order.orderType = 'LMT'
     order.lmtPrice = '1.10'
     order.eTradeOnly = False
     order.firmQuoteOnly = False
     time.sleep(3)
-
     # Place order
     contract = FX_contract('EURUSD')
-    app.placeOrder(app.nextorderId, contract, order)
+    print("placing order for fx ")
+    #app.placeOrder(app.nextorderId, contract, order)
+    app.disconnect()
+
+
 
 
 

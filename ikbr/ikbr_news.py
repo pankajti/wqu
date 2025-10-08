@@ -26,6 +26,6 @@ app = NewsDemo()
 app.connect('127.0.0.1', 7497, 123)
 #app.nextorderId = None
 time.sleep(5)
-app.reqHistoricalNews(10003, 8314, "BRFG", "", "", 10, [])
-app.reqNewsArticle(10002, "BRFG", "BRFG$12d0a5d4", [])
+#app.reqHistoricalNews(10003, 8314, "BRFG", "", "", 10, [])
+app.reqNewsArticle(10002, "BRFG", "BRFG$116b1dd1", [])
 app.run()

@@ -1,8 +1,6 @@
 from ibapi.client import *
 from ibapi.wrapper import *
-import pandas_datareader
 
-pandas_datareader.nasdaq_trader.get_nasdaq_symbols()
 
 
 import time
